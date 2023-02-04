@@ -1,6 +1,7 @@
 package top.mrxiaom.papi;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
@@ -11,10 +12,13 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-public class TimeExpansion extends PlaceholderExpansion {
+public class TimeExpansion extends PlaceholderExpansion implements Configurable {
     Pattern ROUND_BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[(]([^()]+)[)]");
+    int hourOffset = 8;
     @Override
     public String getIdentifier() {
         return "time";
@@ -29,6 +33,18 @@ public class TimeExpansion extends PlaceholderExpansion {
     public String getVersion() {
         return "1.0.0";
     }
+    @Override
+    public Map<String, Object> getDefaults() {
+        Map<String, Object> defaults = new HashMap<>();
+        defaults.put("hour-offset", 8);
+        return defaults;
+    }
+
+    @Override
+    public boolean register() {
+        hourOffset = getInt("hour-offset", 8);
+        return super.register();
+    }
 
     @Override
     public String onRequest(OfflinePlayer p, String params) {
@@ -37,17 +53,17 @@ public class TimeExpansion extends PlaceholderExpansion {
         String[] args = params.split("_");
         if (args.length >= 2) {
             try {
-                LocalDateTime time = parse(args[0]);
+                LocalDateTime time = parse(args[0], hourOffset);
                 if (time == null) return null;
                 time = override(time, args, 2);
-                return format(time, args[1]);
+                return format(time, args[1], hourOffset);
             } catch (Throwable ignored) {
             }
         }
         return null;
     }
 
-    public static LocalDateTime parse(String param) {
+    public static LocalDateTime parse(String param, int hourOffset) {
         if (param.equalsIgnoreCase("now")) return LocalDateTime.now();
         if (param.contains("|")) {
             String[] args = param.split("\\|", 2);
@@ -56,13 +72,13 @@ public class TimeExpansion extends PlaceholderExpansion {
         }
         long timestamp = Long.parseLong(param);
         return Instant.ofEpochSecond(timestamp)
-                .atZone(ZoneOffset.ofHours(8))
+                .atZone(ZoneOffset.ofHours(hourOffset))
                 .toLocalDateTime();
     }
 
-    public static String format(LocalDateTime time, String param) {
+    public static String format(LocalDateTime time, String param, int hourOffset) {
         if (param.equalsIgnoreCase("unix")) return String.valueOf(
-                time.toInstant(ZoneOffset.ofHours(8)).getEpochSecond()
+                time.toInstant(ZoneOffset.ofHours(hourOffset)).getEpochSecond()
         );
         DateTimeFormatter format = DateTimeFormatter.ofPattern(param);
         return time.format(format);
