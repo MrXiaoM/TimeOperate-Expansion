@@ -99,7 +99,10 @@ public class TimeExpansion extends PlaceholderExpansion {
 
     public static Duration parseDuration(String s) {
         try {
-            return Duration.parse("P" + s.substring(1).toUpperCase());
+            s = s.toUpperCase().replace("D","DT");
+            if (!s.contains("DT")) s = "T" + s;
+            if (s.endsWith("T")) s = s.substring(0, s.length() - 1);
+            return Duration.parse("P" + s);
         } catch (DateTimeParseException ignored){
             return null;
         }
