@@ -21,7 +21,7 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
     int hourOffset = 8;
     @Override
     public String getIdentifier() {
-        return "time";
+        return "timeoperate";
     }
 
     @Override

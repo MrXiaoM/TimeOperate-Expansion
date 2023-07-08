@@ -1,9 +1,9 @@
-# Time-Expansion
+# TimeOperate-Expansion
 Time operating expansion for PlaceholderAPI
 
 # Install
 
-* Download jar file from [releases](https://github.com/MrXiaoM/Time-Expansion/releases).
+* Download jar file from [releases](https://github.com/MrXiaoM/TimeOperate-Expansion/releases).
 * Put the jar file to `/plugins/PlaceholderAPI/expansions/`
 * Execute command `/papi register <filename>` or `/papi reload` or restart server.
 
@@ -12,11 +12,11 @@ Time operating expansion for PlaceholderAPI
 ```
 // Arguments: <Required> [Optional]
 
-%time_<time>_<format>[_<time override>]%
+%timeoperate_<time>_<format>[_<time override>]%
 ```
 Type `{placeholder}` or `(placeholder)` if you want to use some placeholders in arguments.
 
-> I am not a native English speaker. There is maybe some typo error.
+> I am not a native English speaker. There are maybe some typo error.
 
 ## Time
 | value          | detail | example                |
@@ -49,3 +49,12 @@ Support multi overrides, connect them with `_`.
 | `h`, `hour` | Hour |
 | `m`, `minute` | Minute |
 | `s`, `second` | Second |
+
+# Examples
+
+```
+// Get timestamp (in second) of tomorrow 6:00
+%timeoperate_now_unix_+1d_h=0_m=0_s=0%
+// Get time of tomorrow but minute and second are 0 with custom format
+%timeoperate_now_yyyy/MM/dd HH:mm:ss_+1d_m=0_s=0%
+```
