@@ -54,7 +54,7 @@ Support multi overrides, connect them with `_`.
 
 ```
 // Get timestamp (in second) of tomorrow 6:00
-%timeoperate_now_unix_+1d_h=0_m=0_s=0%
+%timeoperate_now_unix_+1d_h=6_m=0_s=0%
 // Get time of tomorrow but minute and second are 0 with custom format
 %timeoperate_now_yyyy/MM/dd HH:mm:ss_+1d_m=0_s=0%
 ```
