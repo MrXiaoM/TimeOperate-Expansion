@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.clip.placeholderapi.replacer.Replacer;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class TimeExpansion extends PlaceholderExpansion implements Configurable {
     private final Pattern ROUND_BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[(]([^()]+)[)]");
+    private final boolean supportReplacer = isReplacerPresent();
     private int hourOffset = 8;
     @NotNull
     @Override
@@ -52,9 +54,18 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
         return super.register();
     }
 
+    private String setRoundBracketPlaceholders(OfflinePlayer p, String params) {
+        if (supportReplacer) {
+            return CustomReplacer.ROUND_BRACKET.apply(params, p,
+                    PlaceholderAPIPlugin.getInstance().getLocalExpansionManager()::getExpansion);
+        } else {
+            return PlaceholderAPI.setPlaceholders(p, params, ROUND_BRACKET_PLACEHOLDER_PATTERN);
+        }
+    }
+
     @Override
-    public String onRequest(OfflinePlayer p, String params) {
-        params = PlaceholderAPI.setPlaceholders(p, params, ROUND_BRACKET_PLACEHOLDER_PATTERN);
+    public String onRequest(OfflinePlayer p, @NotNull String params) {
+        params = setRoundBracketPlaceholders(p, params);
         params = PlaceholderAPI.setBracketPlaceholders(p, params);
         String[] args = params.split("_");
         if (args.length >= 2) {
@@ -155,5 +166,14 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
      */
     static boolean e(String s, String... a) {
         return Arrays.asList(a).contains(s);
+    }
+
+    static boolean isReplacerPresent() {
+        try {
+            Class.forName("me.clip.placeholderapi.replacer.Replacer");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }
