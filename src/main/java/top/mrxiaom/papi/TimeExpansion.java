@@ -1,9 +1,11 @@
 package top.mrxiaom.papi;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,22 +19,26 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class TimeExpansion extends PlaceholderExpansion implements Configurable {
-    Pattern ROUND_BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[(]([^()]+)[)]");
-    int hourOffset = 8;
+    private final Pattern ROUND_BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[(]([^()]+)[)]");
+    private int hourOffset = 8;
+    @NotNull
     @Override
     public String getIdentifier() {
         return "timeoperate";
     }
 
+    @NotNull
     @Override
     public String getAuthor() {
         return "MrXiaoM";
     }
 
+    @NotNull
     @Override
     public String getVersion() {
         return "1.2.0";
     }
+
     @Override
     public Map<String, Object> getDefaults() {
         Map<String, Object> defaults = new HashMap<>();
@@ -107,6 +113,24 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
                     if (e(unit, "M", "month")) time = time.withMonth(value);
                     if (e(unit, "y", "year")) time = time.withYear(value);
                 } catch (NumberFormatException ignored) {
+                }
+            } else if (override.contains(":")) {
+                String[] split = override.split(":", 3);
+                if (split.length == 2) {
+                    try {
+                        if (!split[0].equals("~")) time = time.withHour(Integer.parseInt(split[0]));
+                        if (!split[1].equals("~")) time = time.withMinute(Integer.parseInt(split[1]));
+                        time = time.withSecond(0);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+                if (split.length == 3) {
+                    try {
+                        if (!split[0].equals("~")) time = time.withHour(Integer.parseInt(split[0]));
+                        if (!split[1].equals("~")) time = time.withMinute(Integer.parseInt(split[1]));
+                        if (!split[2].equals("~")) time = time.withSecond(Integer.parseInt(split[2]));
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
         }
