@@ -4,14 +4,10 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.clip.placeholderapi.replacer.Replacer;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -142,6 +138,24 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
                         if (!split[2].equals("~")) time = time.withSecond(Integer.parseInt(split[2]));
                     } catch (NumberFormatException ignored) {
                     }
+                }
+            } else if (override.startsWith("w+")) {
+                try {
+                    int weeks = Integer.parseInt(override.substring(2));
+                    if (!time.getDayOfWeek().equals(DayOfWeek.MONDAY)) { // 重置回周一
+                        time = time.minusDays(time.getDayOfWeek().getValue() - 1);
+                    }
+                    if (weeks > 0) time = time.plusWeeks(weeks);
+                } catch (NumberFormatException ignored) {
+                }
+            } else if (override.startsWith("w-")) {
+                try {
+                    int weeks = Integer.parseInt(override.substring(2));
+                    if (!time.getDayOfWeek().equals(DayOfWeek.MONDAY)) { // 重置回周一
+                        time = time.minusDays(time.getDayOfWeek().getValue() - 1);
+                    }
+                    if (weeks > 0) time = time.minusWeeks(weeks);
+                } catch (NumberFormatException ignored) {
                 }
             }
         }
