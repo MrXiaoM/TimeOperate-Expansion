@@ -157,6 +157,30 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
                     if (weeks > 0) time = time.minusWeeks(weeks);
                 } catch (NumberFormatException ignored) {
                 }
+            } else if (override.startsWith("M+")) {
+                try {
+                    int months = Integer.parseInt(override.substring(2));
+                    time = time.plusMonths(months);
+                } catch (NumberFormatException ignored) {
+                }
+            } else if (override.startsWith("M-")) {
+                try {
+                    int months = Integer.parseInt(override.substring(2));
+                    time = time.minusMonths(months);
+                } catch (NumberFormatException ignored) {
+                }
+            } else if (override.toLowerCase().startsWith("y+")) {
+                try {
+                    int years = Integer.parseInt(override.substring(2));
+                    time = time.plusYears(years);
+                } catch (NumberFormatException ignored) {
+                }
+            } else if (override.toLowerCase().startsWith("y-")) {
+                try {
+                    int years = Integer.parseInt(override.substring(2));
+                    time = time.minusYears(years);
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
         return time;
