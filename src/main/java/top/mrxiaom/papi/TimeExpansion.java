@@ -34,7 +34,7 @@ public class TimeExpansion extends PlaceholderExpansion implements Configurable 
     @NotNull
     @Override
     public String getVersion() {
-        return "1.2.1";
+        return "1.2.3";
     }
 
     @Override
